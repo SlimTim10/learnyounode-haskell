@@ -31,7 +31,7 @@ countLinesFile fp = do
 ls :: FilePath -> String -> IO ()
 ls fp ext = do
   files <- listDirectory fp
-  print $ intercalate "\n" . filter (\x -> ext `isSuffixOf` x) $ files
+  print $ intercalate "\n" . filter (\x -> ("." ++ ext) `isSuffixOf` x) $ files
 
 -- Exercise 7
 -- Perform a HTTP GET request to a URL provided and print the length and body
