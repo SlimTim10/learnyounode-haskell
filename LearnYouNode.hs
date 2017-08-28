@@ -10,6 +10,7 @@ import qualified Data.Text.Lazy as T
 import qualified Data.Char as C
 import Data.Text.Lazy.Encoding (encodeUtf8)
 import Data.Time
+import Data.Time.Clock.POSIX
 import Control.Monad (join)
 
 import Network.Wreq (get, responseBody)
@@ -150,12 +151,19 @@ timeToJSON s =
       Just x ->
         let (TimeOfDay hour minute second) = x
         in
-          "{" ++
+          "{ " ++
           "\"hour\": " ++ show hour ++ ", " ++
           "\"minute\": " ++ show minute ++ ", " ++
           "\"second\": " ++ show (floor second) ++
-          "}"
+          " }"
       Nothing -> "Invalid format"
 
 unixTimeToJSON :: String -> String
-unixTimeToJSON s = undefined
+unixTimeToJSON s =
+  let m = parseTimeM True defaultTimeLocale "%Y-%m-%dT%H:%M:%S" s :: Maybe UTCTime
+  in
+    case m of
+      Just x ->
+        let unixtime = utcTimeToPOSIXSeconds x
+        in "{ \"unixtime\": " ++ show unixtime ++ " }"
+      Nothing -> "Invalid format"
