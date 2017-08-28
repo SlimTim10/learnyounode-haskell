@@ -135,12 +135,12 @@ apiServer port = do
     jsonTime t = responseLBS
       status200
       [(hContentType, "application/json")]
-      $ stringToUtf8 $ timeToJSON t
+      $ stringToUtf8 $ timeToJSON $ read t
     jsonUnixTime :: String -> Response
     jsonUnixTime t = responseLBS
       status200
       [(hContentType, "application/json")]
-      $ stringToUtf8 $ unixTimeToJSON t
+      $ stringToUtf8 $ unixTimeToJSON $ read t
 
 timeToJSON :: String -> String
 timeToJSON s =
@@ -150,10 +150,12 @@ timeToJSON s =
       Just x ->
         let (TimeOfDay hour minute second) = x
         in
-          "{ \"hour\": \"" ++ show hour
-          ++ "\", \"minute\": \"" ++ show minute
-          ++ "\", \"second\": " ++ show second ++ "\" }"
+          "{" ++
+          "\"hour\": " ++ show hour ++ ", " ++
+          "\"minute\": " ++ show minute ++ ", " ++
+          "\"second\": " ++ show (floor second) ++
+          "}"
       Nothing -> "Invalid format"
 
 unixTimeToJSON :: String -> String
-unixTimeToJSON s = "test"
+unixTimeToJSON s = undefined
