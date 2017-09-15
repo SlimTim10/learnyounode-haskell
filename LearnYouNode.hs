@@ -148,6 +148,7 @@ timeToJSON s =
   let m = parseTimeM True defaultTimeLocale "%Y-%m-%dT%H:%M:%S" s :: Maybe TimeOfDay
   in
     case m of
+      Nothing -> "{\"error\": \"Invalid format\"}"
       Just x ->
         let (TimeOfDay hour minute second) = x
         in
@@ -156,14 +157,13 @@ timeToJSON s =
           "\"minute\": " ++ show minute ++ ", " ++
           "\"second\": " ++ show (floor second) ++
           " }"
-      Nothing -> "Invalid format"
 
 unixTimeToJSON :: String -> String
 unixTimeToJSON s =
   let m = parseTimeM True defaultTimeLocale "%Y-%m-%dT%H:%M:%S" s :: Maybe UTCTime
   in
     case m of
+      Nothing -> "{\"error\": \"Invalid format\"}"
       Just x ->
         let unixtime = utcTimeToPOSIXSeconds x
         in "{ \"unixtime\": " ++ show unixtime ++ " }"
-      Nothing -> "Invalid format"
